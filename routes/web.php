@@ -25,7 +25,6 @@ Route::post('/upload', function (Request $request) {
     ]);
 
     if ($validated->fails()) {
-        // toastr()->error('Please upload a valid file.');
         noty()->addError('Please upload a valid file.');
         return redirect('/');
     }
@@ -41,7 +40,6 @@ Route::post('/upload', function (Request $request) {
 
         $responseData = $response->body();
 
-        // toastr()->error('Your request has been processed successfully.');
         noty()->addSuccess('Your request has been processed successfully.');
     } catch (Exception $e) {
         // Log the exception for developers
@@ -49,7 +47,6 @@ Route::post('/upload', function (Request $request) {
 
         // Return a friendly message for users
         $responseData = 'Sorry, there was an error processing your request. Please try again later.';
-        // toastr()->error($responseData);
         noty()->addError($responseData);
     }
 
