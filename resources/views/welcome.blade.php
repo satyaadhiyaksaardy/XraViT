@@ -126,7 +126,7 @@
                                                 <label class="input-group-text" for="input">Upload</label>
                                             </div>
                                             <textarea disabled placeholder="Analized output..." class="form-control mb-3" name="output" id="output"
-                                                rows="10"></textarea>
+                                                rows="10">{{ $response ?? '' }}</textarea>
                                             <div class="d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary">Submit</button>
                                             </div>

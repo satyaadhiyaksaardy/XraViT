@@ -20,11 +20,11 @@ Route::get('/', function () {
 });
 
 Route::post('/upload', function (Request $request) {
-    $validated = Validator::make($request->all(), [
+    $validator = Validator::make($request->all(), [
         'input' => 'required|file|mimes:jpeg,png,jpg|max:2048',
     ]);
 
-    if ($validated->fails()) {
+    if ($validator->fails()) {
         noty()->addError('Please upload a valid file.');
         return redirect('/');
     }
@@ -34,21 +34,24 @@ Route::post('/upload', function (Request $request) {
     try {
         $response = Http::attach(
             'input',
-            file_get_contents($uploadedFile->getRealPath()),
+            file_get_contents($uploadedFile),
             $uploadedFile->getClientOriginalName()
         )->post('http://example.com/users');
 
-        $responseData = $response->body();
+        if ($response->failed()) {
+            throw new Exception('Error when sending POST request.');
+        }
 
         noty()->addSuccess('Your request has been processed successfully.');
+        return redirect('/')->with('response', $response->body());
+
     } catch (Exception $e) {
         // Log the exception for developers
         Log::error('Error when sending POST request: ' . $e->getMessage());
 
-        // Return a friendly message for users
-        $responseData = 'Sorry, there was an error processing your request. Please try again later.';
-        noty()->addError($responseData);
+        // Notify user of the error
+        $errorMessage = 'Sorry, there was an error processing your request. Please try again later.';
+        noty()->addError($errorMessage);
+        return redirect('/')->with('response', $errorMessage);
     }
-
-    return redirect('/')->with('response', $responseData);
 });
